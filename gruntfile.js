@@ -2,7 +2,7 @@ module.exports = function(grunt){
     grunt.initConfig({
         jsHint: {
             files: ['server.js', 'app/**/*.js']
-        }
+        },
         watch:{
             files: ['<%=jsHint.files %>'],
             tasks: ['jsHint']
