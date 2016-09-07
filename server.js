@@ -9,7 +9,14 @@ mongoClient.connect(url, function(err, db){
     console.log('Connect to server');
 
     insertFun(db, function(){
-        db.close();
+        queryFun(db, function(){
+            updateFun(db, function(){
+                queryFun(db, function(){
+                    db.close();
+                });
+            });
+        });
+        
     });
     
 });
@@ -31,10 +38,26 @@ function insertFun(db, callback){
     });
 };
 
-function queryFun(){
-
+function queryFun(db, callback){
+    var col = db.collection('user');
+    col.find({}).toArray(function(err, doc){
+        assert.equal(null, err);
+        console.log('Query result:');
+        console.log(doc);
+        callback(doc);
+    });
 };
 
 function deleteFun(){
 
+};
+
+function updateFun(db, callback){
+    var col = db.collection('user');
+    col.updateOne({'a':1}, {$set: {'c':'newA'}}, function(err, rec){
+        assert.equal(null, err);
+        console.log('Update result is :');
+        console.log(rec.result);
+        callback(rec);
+    });
 };
