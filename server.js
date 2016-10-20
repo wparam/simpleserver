@@ -1,63 +1,18 @@
-var http = require('http'),
-    mongoClient = require('mongodb').MongoClient,
-    assert = require('assert');
+const http = require('http');
 
-var url = 'mongodb://localhost:27017/test'
+const hostname = '127.0.0.1';
+const port = 3000;
 
-mongoClient.connect(url, function(err, db){
-    assert.equal(null, err);
-    console.log('Connect to server');
-
-    insertFun(db, function(){
-        queryFun(db, function(){
-            updateFun(db, function(){
-                queryFun(db, function(){
-                    db.close();
-                });
-            });
-        });
-        
+function Run(){
+    var server = http.createServer((req, res)=>{
+        //res.statusCode = 200;
+        //res.setHeader('Content-Type', 'text/plain');
+        res.end('hello, world\n');
     });
-    
-});
 
-module.exports = function(){
-    http.createServer({});
+    server.listen(port, hostname, ()=>{
+        console.log(`Server running at http://${hostname}:${port}/`);
+    });
 }
 
-
-function insertFun(db, callback){
-    var col = db.collection('user');
-    col.insertMany([
-        {a: 1}, {b:2}
-    ], function(err, result){
-        assert.equal(null, err);
-        assert.equal(2, result.result.n);
-        console.log('inserted 2 documents');
-        callback(result);
-    });
-};
-
-function queryFun(db, callback){
-    var col = db.collection('user');
-    col.find({}).toArray(function(err, doc){
-        assert.equal(null, err);
-        console.log('Query result:');
-        console.log(doc);
-        callback(doc);
-    });
-};
-
-function deleteFun(){
-
-};
-
-function updateFun(db, callback){
-    var col = db.collection('user');
-    col.updateOne({'a':1}, {$set: {'c':'newA'}}, function(err, rec){
-        assert.equal(null, err);
-        console.log('Update result is :');
-        console.log(rec.result);
-        callback(rec);
-    });
-};
+Run();
