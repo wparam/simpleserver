@@ -13,6 +13,12 @@ function Run(){
     server.listen(port, hostname, ()=>{
         console.log(`Server running at http://${hostname}:${port}/`);
     });
+
+    http.request().on('response', function(res){
+        res.on('data', function(data){
+            
+        });
+    });
 }
 
 Run();
