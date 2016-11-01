@@ -14,11 +14,27 @@ function Run(){
         console.log(`Server running at http://${hostname}:${port}/`);
     });
 
-    http.request().on('response', function(res){
-        res.on('data', function(data){
-            
-        });
+    server.on('connect', (req, res)=>{
+        console.log('on connect');
     });
+
+    var request = http.request({
+        port: 3000,
+        hostname: '127.0.0.1',
+        method: 'GET'
+    });
+    request.on('response', (res)=>{
+        console.log('hit response');
+    });
+    request.on('socket', ()=>{
+        console.log('socket event');
+    });
+    request.end();
+    // http.request().on('response', function(res){
+    //     res.on('data', function(data){
+            
+    //     });
+    // });
 }
 
 Run();
