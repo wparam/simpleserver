@@ -19,6 +19,20 @@ function Run(){
         console.log('on connect');
     });
 
+    server.on('request', (req, res)=>{
+        console.log('there is a new request');
+        req.on('readable', ()=>{
+            console.log('hit readable');
+        });
+        req.on('data', (chunk)=>{
+            console.log('received data from request');
+            console.log(chunk);
+        });
+        req.on('end', ()=>{
+            console.log('request ended');
+        });
+    });
+
     var request = http.request({
         port: port,
         hostname: hostname,
@@ -26,9 +40,15 @@ function Run(){
     });
     request.on('response', (res)=>{
         console.log('hit response');
+        res.on('data', (chunk)=>{
+            console.log('got data from server');
+            console.log(chunk.length);
+            console.log(chunk.toString());
+        });
     });
-    //request.write('A', 'utf8')
-    request.end();
+    
+    request.write('A', 'utf8')
+    request.end('ABCDE');
     // http.request().on('response', function(res){
     //     res.on('data', function(data){
             
