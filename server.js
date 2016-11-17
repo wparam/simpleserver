@@ -5,9 +5,9 @@ const port = 4000;
 
 function Run(){
     var server = http.createServer((req, res)=>{
-        //res.statusCode = 200;
-        //res.setHeader('Content-Type', 'text/plain');
-        
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('MyHeader', 'newValue');
+        res.writeHead(200, {'MyHeader': 'oldValue'});
         res.end('hello, world\n');
     });
 
@@ -39,11 +39,10 @@ function Run(){
         method: 'GET'
     });
     request.on('response', (res)=>{
-        console.log('hit response');
+        console.log('http code');
+        console.log(http.HTTP);
         res.on('data', (chunk)=>{
-            console.log('got data from server');
-            console.log(chunk.length);
-            console.log(chunk.toString());
+            
         });
     });
     
