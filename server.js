@@ -5,6 +5,10 @@ const port = 4000;
 
 function Run(){
     var server = http.createServer((req, res)=>{
+        req.on('data', (chunk)=>{
+            console.log('received data from request');
+            console.log(chunk.toString('utf8'));
+        });
         res.setHeader('Content-Type', 'text/plain');
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
@@ -16,20 +20,20 @@ function Run(){
     });
 
     server.on('connect', (req, res)=>{
-        console.log('on connect');
+        // console.log('on connect');
     });
 
     server.on('request', (req, res)=>{
-        console.log('there is a new request');
+        console.log('in 2nd request event');
         req.on('readable', ()=>{
-            console.log('hit readable');
+            // console.log('hit readable');
         });
         req.on('data', (chunk)=>{
             console.log('received data from request');
-            console.log(chunk);
+            console.log(chunk.toString('utf8'));
         });
         req.on('end', ()=>{
-            console.log('request ended');
+            // console.log('request ended');
         });
     });
 
@@ -39,12 +43,12 @@ function Run(){
         method: 'GET'
     });
     request.on('response', (res)=>{
-        console.log('http code');
-        console.log(http.HTTP);
         res.on('data', (chunk)=>{
-            
+            // console.log('request got response');
+            // console.log(chunk.toString('utf8'));
         });
     });
+    
     
     request.write('A', 'utf8')
     request.end('ABCDE');
