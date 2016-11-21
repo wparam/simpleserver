@@ -5,10 +5,6 @@ const port = 4000;
 
 function Run(){
     var server = http.createServer((req, res)=>{
-        req.on('data', (chunk)=>{
-            console.log('received data from request');
-            console.log(chunk.toString('utf8'));
-        });
         res.setHeader('Content-Type', 'text/plain');
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
@@ -19,24 +15,25 @@ function Run(){
         console.log(`Server running at http://${hostname}:${port}/`);
     });
 
-    server.on('connect', (req, res)=>{
-        // console.log('on connect');
-    });
-
+    
     server.on('request', (req, res)=>{
-        console.log('in 2nd request event');
-        req.on('readable', ()=>{
-            // console.log('hit readable');
-        });
-        req.on('data', (chunk)=>{
-            console.log('received data from request');
-            console.log(chunk.toString('utf8'));
-        });
+        // req.on('readable', ()=>{
+        //     console.log('----reqest test -------hit readable');
+        // });
+        // var body = '';
+        // req.on('data', (chunk)=>{
+        //     body += chunk;
+        //     console.log('----reqest test -------received data from request');
+        //     console.log(chunk.toString('utf8'));
+        // });
+        req.pause();
         req.on('end', ()=>{
-            // console.log('request ended');
+            console.log('----reqest test -------request ended');
+            console.log(arguments);
         });
     });
 
+    /* self made mock request in sever
     var request = http.request({
         port: port,
         hostname: hostname,
@@ -52,11 +49,8 @@ function Run(){
     
     request.write('A', 'utf8')
     request.end('ABCDE');
-    // http.request().on('response', function(res){
-    //     res.on('data', function(data){
-            
-    //     });
-    // });
+
+    */
 }
 
 Run();
