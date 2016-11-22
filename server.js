@@ -1,4 +1,5 @@
 const http = require('http');
+const mog = require('./app/mongo.js');
 
 const hostname = '127.0.0.1';
 const port = 4000;
@@ -8,6 +9,8 @@ function Run(){
         res.setHeader('Content-Type', 'text/plain');
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
+        mog.Connect();
+        mog.
         res.end('hello, world\n');
     });
 
