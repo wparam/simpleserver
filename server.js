@@ -10,7 +10,6 @@ function Run(){
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
         mog.Connect();
-        mog.
         res.end('hello, world\n');
     });
 
@@ -29,10 +28,7 @@ function Run(){
         //     console.log('----reqest test -------received data from request');
         //     console.log(chunk.toString('utf8'));
         // });
-        req.pause();
         req.on('end', ()=>{
-            console.log('----reqest test -------request ended');
-            console.log(arguments);
         });
     });
 

@@ -6,17 +6,10 @@ var url = 'mongodb://localhost:27017/test'
 
 module.exports = {
     Connect : function(){
-        assert.equal(null, err);
-        console.log('Connect to server');
-
-        insertFun(db, function(){
-            queryFun(db, function(){
-                updateFun(db, function(){
-                    queryFun(db, function(){
-                        db.close();
-                    });
-                });
-            });
+        mongoClient.connect(url, function(err, db){
+            assert.equal(null, err);
+            console.log('Connect to mongo server');
+            db.close();
         });
     },
     Insert: function(db, callback){
