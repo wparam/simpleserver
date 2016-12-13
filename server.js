@@ -10,6 +10,7 @@ function Run(){
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
         mog.Connect();
+        mog.Query();
         res.end('hello, world\n');
     });
 
