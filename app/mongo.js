@@ -5,10 +5,13 @@ var http = require('http'),
 var url = 'mongodb://localhost:27017/test'
 
 module.exports = {
-    Connect : function(){
+    Connect : function(callback){
         mongoClient.connect(url, function(err, db){
             assert.equal(null, err);
             console.log('Connect to mongo server');
+            if(typeof callback === 'function'){
+                callback(db);
+            }
             db.close();
         });
     },
@@ -23,14 +26,17 @@ module.exports = {
             callback(result);
         });
     },
-    Query: function(db, callback){
-        var col = db.collection('user');
-        col.find({}).toArray(function(err, doc){
-            assert.equal(null, err);
-            console.log('Query result:');
-            console.log(doc);
-            callback(doc);
+    Query: function(done){
+        this.Connect(function(db){
+            var col = db.collection('user');
+            col.find({}).toArray(function(err, doc){
+                assert.equal(null, err);
+                console.log('Query result:');
+                console.log(doc);
+                done(doc);
+            });
         });
+        
     },
     Delete: function(db, callback){},
     Update: function(db, callback){

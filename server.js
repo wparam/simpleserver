@@ -6,12 +6,14 @@ const port = 4000;
 
 function Run(){
     var server = http.createServer((req, res)=>{
-        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Type', 'application/json');
         res.setHeader('MyHeader', 'newValue');
         res.writeHead(200, {'MyHeader': 'oldValue'});
-        mog.Connect();
-        mog.Query();
-        res.end('hello, world\n');
+        mog.Query(function(doc){
+            res.end(JSON.stringify(doc));
+            res.end();
+        });
+        // res.end('hello, world\n');
     });
 
     server.listen(port, hostname, ()=>{
