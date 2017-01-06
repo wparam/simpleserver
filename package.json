@@ -22,6 +22,7 @@
     "grunt-contrib-watch": "^1.0.0"
   },
   "dependencies": {
+    "grunt-contrib-uglify": "^2.0.0",
     "mongodb": "^2.2.9"
   }
 }
