@@ -2,7 +2,7 @@ var http = require('http'),
     mongoClient = require('mongodb').MongoClient,
     assert = require('assert');
 
-var url = 'mongodb://localhost:27017/test'
+var url = 'mongodb://localhost:27017/test';
 
 module.exports = {
     Connect : function(callback){

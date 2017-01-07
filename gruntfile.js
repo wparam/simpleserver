@@ -1,17 +1,26 @@
 module.exports = function(grunt){
     grunt.initConfig({
-        jsHint: {
-            files: ['server.js', 'app/**/*.js']
+        jshint: {
+            mine: ['server.js', 'app/**/*.js'],
+            options: {
+                esversion: 6
+            }
         },
         watch:{
-            files: ['<%=jsHint.files %>'],
+            files: ['<%=jsHint.files %>', 'server.js', 'app/**/*.js'],
             tasks: ['jsHint']
+        },
+        nodemon: {
+            dev: {
+                script: 'server.js'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-nodemon');
 
-    grunt.registerTask('default', ['jsHint']);
+    grunt.registerTask('default', ['jshint', 'nodemon']);
 };
