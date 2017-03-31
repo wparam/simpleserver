@@ -1,0 +1,24 @@
+<!doctype html>
+<html ng-app="project">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.js"></script>
+    <script src="./lib/angular-ui-router.js"></script>
+    <script>  
+      var app = angular.module('project',['ui.router']);
+    </script>
+  </head>
+  <body>
+    <h2>JavaScript Projects</h2>
+    <div ng-controller="mainctrl">
+      <ul>
+        <li><a ui-sref="/" >Home</a></li>
+        <li><a ui-sref="first" >Go to First page</a></li>
+        <li><a ui-sref="second" >Go to Second page</a></li>
+      </ul>
+      <div>
+        <ui-view></ui-view>
+      </div>
+    </div>
+    <script src="./src/run.js"></script>
+  </body>
+</html>
