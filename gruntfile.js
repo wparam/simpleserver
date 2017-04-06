@@ -7,12 +7,12 @@ module.exports = function(grunt){
             }
         },
         watch:{
-            files: ['<%=jsHint.files %>', 'server.js', 'app/**/*.js'],
+            files: ['<%=jsHint.files %>', 'server.js', 'app.js', 'app/**/*.js'],
             tasks: ['jsHint']
         },
         nodemon: {
             dev: {
-                script: 'server.js'
+                script: 'app.js'
             }
         }
     });
