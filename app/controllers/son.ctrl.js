@@ -7,5 +7,5 @@ function Son(){
 
 util.inherits(Son, Parent);
 
-var son = new Son('it is son');
+var son =new Parent();
 son.showPath();
