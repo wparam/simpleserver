@@ -28,6 +28,7 @@
     "grunt-nodemon": "^0.4.2",
     "lodash": "^4.17.4",
     "mongodb": "^2.2.9",
+    "loadbalancer": "file:./modules/loadbalancer",
     "pug": "^2.0.0-beta11"
   }
 }

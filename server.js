@@ -46,13 +46,14 @@ function Run(){
     });
     request.on('response', (res)=>{
         res.on('data', (chunk)=>{
-            // console.log('request got response');
-            // console.log(chunk.toString('utf8'));
+            console.log('request got response');
+            console.log(chunk.toString('utf8'));
         });
+        console.log(res.headers);
+        console.log(res);
     });
     
     
-    request.write('A', 'utf8')
     request.end('ABCDE');
 
     

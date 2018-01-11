@@ -1,0 +1,17 @@
+{
+  "name": "loadbalancer",
+  "version": "1.0.0",
+  "description": "Loadbalancer for different service endpoints with failover and sticky session support",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Operasolutions",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^0.9.0",
+    "hashmap": "^2.0.1",
+    "node-ipc": "^1.1.13",
+    "winston": "^1.0.0"
+  }
+}
