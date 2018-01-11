@@ -6,11 +6,11 @@ const cluster = require('cluster');
 const loadbalancer = require('./modules/loadbalancer');
 
 const mockService = [
-    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 1, endpoint:'/a', type:'sherpa1'},
-    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 2, endpoint:'/a', type:'sherpa2'},
-    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 3, endpoint:'/a', type:'sherpa3'},
-    {host: 'http://172.20.30.115:50015', orgId: 1, clientId: 4, endpoint:'/a', type:'sherpa1'},
-    {host: 'http://172.20.30.115:50015', orgId: 1, clientId: 5, endpoint:'/a', type:'sherpa2'}
+    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 1, endpoint:'/v1/configuration/healthcheckping', type:'sherpa1'},
+    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 2, endpoint:'/v1/configuration/healthcheckping', type:'sherpa2'},
+    {host: 'http://172.20.30.115:60016', orgId: 1, clientId: 3, endpoint:'/v1/configuration/healthcheckping', type:'sherpa3'},
+    {host: 'http://172.20.30.115:50015', orgId: 2, clientId: 4, endpoint:'/v1/configuration/healthcheckping', type:'sherpa1'},
+    {host: 'http://172.20.30.115:50015', orgId: 2, clientId: 5, endpoint:'/v1/configuration/healthcheckping', type:'sherpa2'}
 ];
 
 
@@ -21,8 +21,9 @@ for (var key in mockService) {
 loadbalancer.start();
 
 if(cluster.isMaster){
+    console.log('Running in Master Process');
     var workers = [];
-    for (var id in cluster.workers) {
+    for (let i=0; i<1; i++) {
         workers.push(cluster.fork());
     }
     var cleanExpired = function () {
@@ -41,8 +42,9 @@ if(cluster.isMaster){
         logger.error('worker ' + worker.process.pid + ' died');
     });
 }else{
+    console.log('Running In Cluster Process');
     var server = app.listen(3001, function () {
-        logger.info('Express server listening on port 3001');
+        console.log('Express server listening on port 3001');
     });
 }
 

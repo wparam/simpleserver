@@ -11,7 +11,8 @@ var self = module.exports = {
     ipc: nodeIpc,
 
     addServer: function (balancerId, server, endpoint) {
-
+        console.log('~~~~~~~~~~~Adding Server~~~~~~~~~');
+        console.log(balancerId);
         if (self.loadBalancers[balancerId] && self.loadBalancers[balancerId].contains(server)) {
             winston.warn('Trying to add existing server with configuration: ' + balancerId + ' server: ' + server);
             return;
@@ -35,6 +36,7 @@ var self = module.exports = {
 
     start: function () {
         if (cluster.isMaster) {
+            console.log('In Manager"s Master');
             self.ipc.config.id = 'loadbalancer';
             self.ipc.config.silent= true;
             self.ipc.serve(
@@ -65,6 +67,7 @@ var self = module.exports = {
             self.ipc.server.define.listen['addServer'] = 'This event type listens for message strings as value of data key.';
             self.ipc.server.start();
         } else {
+            console.log('In Manager"s Cluster');
             self.ipc.config.id = 'loadbalancerClient';
             self.ipc.config.silent = true;
             self.ipc.config.retry = 1000;
