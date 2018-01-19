@@ -36,11 +36,12 @@ var self = module.exports = {
 
     start: function () {
         if (cluster.isMaster) {
-            console.log('In Manager"s Master');
+            console.log('-------------------------------------Start In Manager"s Master-------------------------------------');
             self.ipc.config.id = 'loadbalancer';
             self.ipc.config.silent= true;
             self.ipc.serve(
                 function () {
+                    console.log('Start IPC Server in Master');
                     self.ipc.server.on(
                         'addServer',
                         function (data, socket) {
@@ -74,8 +75,10 @@ var self = module.exports = {
             self.ipc.connectTo(
                 'loadbalancer',
                 function () {
+                    console.log('+++++++++++++++++++++++++++++++++++++++connnect to ipc server+++++++++++++++++++++++++++++++++++++++');
                     self.ipc.of.loadbalancer.on('setWorkingList',
                         function (data) {
+                            console.log('+++++++++++++++++++++++++++++++++++++++on cluster setWorkingList+++++++++++++++++++++++++++++++++++++++');
                             self.loadBalancers[data.balancer].setWorkingList(data.workingList);
                             self.loadBalancers[data.balancer].setLastRun(new Date().getTime());
                         }.bind(self)
