@@ -36,6 +36,13 @@ var LoadBalancer = function () {
         return identifierList.get(id).host;
     };
 
+    this.getServers = function () {
+        if (workingList.length === 0)
+            throw new Error('LoadBalancerError, Working server list is empty!');
+        
+        return workingList;
+    };
+
     /**
      * Add a server to the current list of servers to be checked if its online.
      * If the server is found to be online during the next check it will be returned as one
@@ -195,6 +202,8 @@ var LoadBalancer = function () {
                 serverList.push(server.host);
             }
             workingList = newWorkingList;
+
+            console.log('Finish running service check, available services number is :' + workingList.length);
 
             managerCallback(id, newWorkingList);
 

@@ -4,8 +4,12 @@ var app = express()
 var router = require('./app/routers/core.router')(app)
 const cluster = require('cluster');
 const loadbalancer = require('./modules/loadbalancer');
+const chalk = require('chalk');
 
 const winston = require('winston');
+
+const master = chalk.green;
+const clu = chalk.yellow;
 
 winston.level = 'debug';
 const mockService = [
@@ -24,30 +28,21 @@ for (var key in mockService) {
 loadbalancer.start();
 
 if(cluster.isMaster){
-    console.log('---------------------------------------Running in Master Process---------------------------------------');
-    var workers = [];
-    for (let i=0; i<1; i++) {
-        workers.push(cluster.fork());
+    console.log(master('----------Running in Master Process----------'));
+    var cpus = require('os').cpus().length-1;
+    console.log(master('-------system-------fork clusters on cpus: ' + cpus));
+    for(var i = 0; i<cpus; i++){
+        cluster.fork();
     }
-    var cleanExpired = function () {
-        if(workers.length===0){
-            logger.error('Worker List Is Empty!');
-            return;
-        }
-        var workerId = Math.floor((Math.random() * workers.length));
-        console.log('Worker: ' + workers[workerId].id + ' should be cleaning up expired sessions!');
-        workers[workerId].send('cleanExpired');
-    };
-
-    setInterval(cleanExpired, 100000);
 
     cluster.on('exit', function (worker, code, signal) {
-        logger.error('worker ' + worker.process.pid + ' died');
+        console.log(master('worker ' + worker.process.pid + ' died'));
+        // cluster.fork();
     });
 }else{
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++Running In Cluster Process+++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log(clu('+++++++++++Running In Cluster Process+++++++++++'));
     var server = app.listen(3001, function () {
-        console.log('Express server listening on port 3001');
+        console.log(clu('Express server listening on port 3001'));
     });
 }
 

@@ -1,15 +1,15 @@
 const http = require('http');
-const mog = require('./app/mongo.js');
+// const mog = require('./app/mongo.js');
 
 const hostname = '127.0.0.1';
 const port = 4000;
 
-function Run(){
-    var server = http.createServer((req, res)=>{
+function Run() {
+    var server = http.createServer((req, res) => {
         console.log('on server handler');
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('MyHeader', 'newValue');
-        res.writeHead(200, {'MyHeader': 'oldValue'});
+        res.writeHead(200, { 'MyHeader': 'oldValue' });
         // mog.Query(function(doc){
         //     res.end(JSON.stringify(doc));
         //     res.end();
@@ -17,23 +17,23 @@ function Run(){
         res.end('hello, world\n');
     });
 
-    server.listen(port, hostname, ()=>{
+    server.listen(port, hostname, () => {
         console.log(`Server running at http://${hostname}:${port}/`);
     });
 
-    
-    server.on('request', (req, res)=>{
+
+    server.on('request', (req, res) => {
         console.log('on seperate handler');
-        req.on('readable', ()=>{
+        req.on('readable', () => {
             console.log('----reqest test -------hit readable');
         });
         let body = '';
-        req.on('data', (chunk)=>{
+        req.on('data', (chunk) => {
             body += chunk;
             console.log('----reqest test -------received data from request');
             console.log(chunk.toString('utf8'));
         });
-        req.on('end', ()=>{
+        req.on('end', () => {
             console.log(body);
         });
     });
@@ -44,19 +44,35 @@ function Run(){
         hostname: hostname,
         method: 'POST'
     });
-    request.on('response', (res)=>{
-        res.on('data', (chunk)=>{
+    request.on('response', (res) => {
+        res.on('data', (chunk) => {
             console.log('request got response');
             console.log(chunk.toString('utf8'));
         });
         console.log(res.headers);
         console.log(res);
     });
-    
-    
+
+
     request.end('ABCDE');
 
+
+}
+
+function mockReq() {
+    var req = http.get('http://localhost:3001/sherpa/availability/availableDate.service?clientId=1&user=test1', (res) => {
+        console.log('Finish response');
+    });
+    var result = '';
+    req.on('response', (res) => {
+        res.on('data', (chunk) => {
+            result += chunk.toString('utf8');
+        });
+        res.on('end', () => {
+            console.log(result);
+        });
+    });
     
 }
 
-Run();
+mockReq();

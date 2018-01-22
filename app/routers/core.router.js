@@ -1,10 +1,11 @@
-var son =require('../controllers/son.ctrl');
+const proxy = require('../controllers/core.ctrl');
+
 module.exports = function(app){
     app.get('/', function (req, res) {
-        res.render('index', {title: 'Hey', message: 'Hello world'});
+        res.end('Hello');
     });
 
-    app.get('/son', son.handle.bind(son));
+    app.get('/sherpa/*', proxy.handleProxy);
     
 };
 
