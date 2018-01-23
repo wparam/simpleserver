@@ -2,6 +2,7 @@ const sherpa = require('../../modules/sherpa-proxy');
 const loadbalancer = require('../../modules/loadbalancer');
 const proxy = sherpa.createProxyServer({removeFirst: '/sherpa'});
 const chalk = require('chalk');
+const http = require('http');
 const master = chalk.green;
 const clu = chalk.yellow;
 
@@ -12,14 +13,15 @@ module.exports = {
         
         var balancerId = '1sherpa';
         var userId= req.query.user;
-        var server = loadbalancer.serverForUser(balancerId);
+        var server = loadbalancer.serverForUser(balancerId, userId);
+        var servers = loadbalancer.activeServerList(balancerId);
         if(req.method === 'POST'){
 
         }
 
         console.log(server);
 
-        if(server.length === 1){
+        if(typeof(server)==='string' ){
             proxy.web(req, res, {target: server + '/v1/data'}, function(err, req, res, target){
                 console.log(clu('This is error in proxy'));
                 console.log(clu(err));
@@ -27,6 +29,10 @@ module.exports = {
     
             proxy.on('proxyRes', (proxyRes, req, res)=>{
                 res.setHeader('server', server);
+            });
+
+            proxy.on('close', () => {
+                console.log(clu('Proxy is closed'));
             });
         }else{
             

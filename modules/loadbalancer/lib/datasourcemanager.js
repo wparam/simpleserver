@@ -110,11 +110,11 @@ var self = module.exports = {
             winston.error('Missing load balancer for key: ' + balancerId + ' in keyset: ', Object.keys(self.loadBalancers));
             throw new Error('DatasourcManagerError', 'Missing load balancer for key: ' + balancerId);
         }
-        if(!userId)
-            return self.loadBalancers[balancerId].getServers();
         return self.loadBalancers[balancerId].getServerForId(userId);
     },
-
+    activeServerList: function(balancerId){
+        return this.loadBalancers[balancerId].getServers();
+    },
     executionTimes: function () {
         var lastExecutionTimes = {};
         for (var key in self.loadBalancers) {
