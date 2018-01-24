@@ -1,7 +1,11 @@
 var express = require('express')
 var path = require('path')
 var app = express()
-var router = require('./app/routers/core.router')(app)
+var router = require('./app/routers/core.router')(app);
+
+require('longjohn');
+
+
 const cluster = require('cluster');
 const loadbalancer = require('./modules/loadbalancer');
 const chalk = require('chalk');
