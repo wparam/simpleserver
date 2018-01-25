@@ -9,64 +9,32 @@ const clu = chalk.yellow;
 const port = 3001;
 const zlib = require('zlib');
 
-const syncR = (req, res, server)=>{
-    var opt = {
-        host: req.hostname,
-        port: port,
-        path: req.url,
-        headers: Object.assign({}, req.headers, {'server-target': server} ),
-        method: req.method,
-        agent: false
-    };
-    console.log(opt);
-    var connect = (req.protocol == 'http' ? http : https).request(opt, (response)=>{
-        if(response.statusCode<200 || response.statusCode > 299){
-            // reject(new Error("Fail to load page, status code: " + response.statusCode));
-            console.log(clu("Fail to load page, status code: " + response.statusCode));
-        }
-        var body = [];
-        response.on('data', (chunk)=>{
-            body.push(chunk);
-        });
-        response.on('end', ()=>{
-            // resolve(body.join(''));
-            console.log(clu('Finish succesuflly'));
-        });
-    });
-    connect.on('error', (err)=>{
-        console.log('error on request');
-        // reject(err);
-    });
-    connect.end();
-}
-
 const handleProxy = (req, res)=>{
     var url = req.url;
-    console.log(clu('+++++++++++++++++++++++++++++++++start handle proxy++++++++++++++++++++++++++++++++'));
-    console.log(req.headers);
-    
     var balancerId = '1sherpa';
     var userId= req.query.user;
     var server = loadbalancer.serverForUser(balancerId, userId);
     var servers = loadbalancer.activeServerList(balancerId);
     if(req.method === 'POST'){
-
     }
-
     var ps = [];
     if(req.headers["server-target"]){
-        console.log(clu('Request start from server'));
         server = req.headers["server-target"];
+        proxy.web(req, res, {target: server + '/v1/data'}, function(err, req, res, target){
+            console.log(clu('This is error in proxy'));
+            console.log(clu(err));
+        });
     }else{
-        console.log(clu('Client Request from browser'));
-        for(var i = 0, l=servers.length; i<l; i++){
+        for(var i = 1, l=servers.length; i<l; i++){
             ps.push(this.syncRequest(req, res, servers[i]));
         }
     
-        console.log('PS are: ');
-        console.log(ps.length);
         Promise.all(ps).then((data) => {
-            console.log(data.length);
+            console.log(data);
+            console.log(clu('Send request from server for browser: ' + servers[0]));
+            proxy.web(req, res, {target: servers[0] + '/v1/data'}, function(err, req, res, target){
+                console.log(clu(err));
+            });
             // console.log(data);
             // for(var i=0, l=data.length; i<l; i++){
             //     console.log(data[i]);
@@ -77,32 +45,6 @@ const handleProxy = (req, res)=>{
         });
         return;
     }
-
-
-    // proxy.on('open', function (proxySocket) {
-    //     console.log('Proxy is openeedd');
-    //     // listen for messages coming FROM the target here
-    //     var ck = [];
-    //     proxySocket.on('data', (data) => {
-    //         ck.push(data);
-    //     }); 
-    //     proxySocket.on('end', () => {
-    //         console.log(ck.join(''));
-    //     });
-    // });
-
-    // proxy.on('proxyRes', function (proxyRes, req, res) {
-    //     console.log('ProxyRes, req url:' + req.url);
-    // });
-
-    proxy.on('close', () => {
-        console.log(clu('Proxy is closed'));
-    });
-
-    proxy.web(req, res, {target: server + '/v1/data'}, function(err, req, res, target){
-        console.log(clu('This is error in proxy'));
-        console.log(clu(err));
-    });
 }
 const syncRequest = (req, res, server)=>{
     var opt = {
@@ -118,15 +60,20 @@ const syncRequest = (req, res, server)=>{
             if(response.statusCode<200 || response.statusCode >= 400){
                 reject(new Error("Fail to load page, status code: " + response.statusCode));
             }
-            var body = [],
-                bodyStr = '';
-            response.on('data', (chunk)=>{
-                body.push(chunk);
-                bodyStr += chunk.toString('utf8');
+            let gzip = zlib.createGunzip();
+            let stream = response;
+            console.log(response.headers['content-encoding']);
+            if(response.headers['content-encoding'] && response.headers['content-encoding'].toLowerCase().indexOf('gzip') >-1){
+                response.pipe(gzip);
+                stream = gzip;
+            }
+            var body = [];
+            stream.on('data', (chunk)=>{
+                body.push(chunk.toString('utf8'));
             });
-            response.on('end', ()=>{
-                console.log(bodyStr);
-                resolve(body.join(''));
+            stream.on('end', ()=>{
+                // resolve(body.join(''));
+                resolve(response.statusCode);
             });
         });
         connect.on('error', (err)=>{
